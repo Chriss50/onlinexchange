@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Models\Account;
 use App\Models\Transaction;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
@@ -65,30 +66,41 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user =  User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-
         ]);
 
-        // return Transaction::create([
-        //     'value' => $data[1000],
-        //     'comment' => $data['Initial deposit'],
-        //     'currency_id' => $data[1],
-        //     'sender_id' => $data[1],
-        //     'receiver_id' => $data[1]
-        // ]);
+        $account = Account::create([
+            "balance"=> 1000,
+            "user_id"=>$user->id,
+            "currency_id"=>1
+        ]);
 
-        
-        $transaction = new Transaction();
-        $transaction -> value = 1000;
-        $transaction -> comment = 'Initial deposit';
-        $transaction -> currency_id = 1;
-        $transaction -> sender_id = 1;
-        $transaction -> receiver_id = 1;
+        $account = Account::create([
+            "balance"=> 0,
+            "user_id"=>$user->id,
+            "currency_id"=>2
+        ]);
 
-        $transaction -> save();
+        $account = Account::create([
+            "balance"=> 0,
+            "user_id"=>$user->id,
+            "currency_id"=>3
+        ]);
+
+        Transaction::create([
+            'currency_id'=>1,
+            'receiver_id'=>$user->id,
+            'value'=>1000,
+            'comment'=>"initial",
+            'sender_id'=>null
+        ]);
+
+
+
+        return $user;
 
     }
 }

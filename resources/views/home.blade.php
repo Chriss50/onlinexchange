@@ -33,10 +33,10 @@
                             @foreach($transactions as $transaction)
                             <tr>
                                 <td>{{$transaction -> id}}</td>
-                                <td>{{$transaction -> sender_id}}</td>
-                                <td>{{$transaction -> receiver_id}}</td>
+                                <td>{{ Auth::user()->id ===$transaction->sender_id ? "You" : ($transaction->sender_id ? \App\Models\User::where(['id' => $transaction->sender_id])->first()->name : "");}}</td>
+                                <td>{{Auth::user()->id ===$transaction->receiver_id ? "You" : \App\Models\User::where(['id' => $transaction->receiver_id])->first()->name;}}</td>
                                 <td>{{$transaction -> value}}</td>
-                                <td>{{$transaction -> currency_id}}</td>
+                                <td>{{\App\Models\Currency::where(['id' => $transaction->currency_id])->first()->name;}}</td>
                                 <td>{{$transaction -> created_at}}</td>
                                 <td>{{$transaction -> updated_at}}</td>
                             </tr>

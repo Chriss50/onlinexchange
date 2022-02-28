@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Currency;
+use App\Models\Account;
 
 class TransactionController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +19,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        // 
+        //
     }
 
     /**
@@ -46,12 +48,37 @@ class TransactionController extends Controller
             'amount' => 'required'
         ]);
 
+        $account_info = Account::where([
+            ['user_id','=',Auth::user()->id],
+            ['currency_id','=',(int)$request->source_money]
+        ])->first();
+            // dd($account_info);
+        if((int) $account_info->balance < $request->amount)
+        {
+            $this->addError("Balance not enough");
+            return;
+        }
+
+
+        $receivingAccount = Account::where([
+            ['user_id','=',$request->receiver],
+            ['currency_id','=',$request->target_money]
+        ])->first();
+
+        $receivingAccount->balance = $receivingAccount->balance + $this->convertCurrency($request->source_money, $request->target_money, $request->amount);
+
+        $receivingAccount->save();
+
+
+        $account_info->balance = $account_info->balance - $request->amount;
+        $account_info->save();
+
         $transaction = new Transaction();
         $transaction -> sender_id = $request -> user() -> id;
         $transaction -> receiver_id = $request -> receiver;
         $transaction -> currency_id = $request -> target_money;
         $transaction -> comment = 'Sent';
-        $transaction -> value = $request -> amount;
+        $transaction -> value =  $this->convertCurrency($request->source_money, $request->target_money, $request->amount);
 
         $transaction -> save();
 
@@ -102,5 +129,21 @@ class TransactionController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function convertCurrency($inputCurrency, $returnCurrency, $amount)
+    {
+        if($inputCurrency == $returnCurrency)
+        {
+            return $amount;
+        }
+
+        $inputRate = Currency::query()->where('id','=',$inputCurrency)->first();
+        $outputRate = Currency::query()->where('id','=',$returnCurrency)->first();
+
+        $dollarAmount =  (float) $amount/ $inputRate->rate;
+        $outgoingAmount = $dollarAmount * $outputRate->rate;
+
+        return $outgoingAmount;
     }
 }

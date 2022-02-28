@@ -13,11 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('currencies', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->float('rate', 8, 2);
-            $table->timestamps();
+        Schema::table('transactions', function (Blueprint $table) {
+
         });
     }
 
@@ -28,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('currencies');
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->integer('sender_id')->nullable()->change();
+        });
     }
 };

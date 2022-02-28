@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Currency;
+use App\Models\Account;
+use Illuminate\Support\Facades\Auth;
+
 
 class CurrencyController extends Controller
 {
@@ -14,7 +17,11 @@ class CurrencyController extends Controller
      */
     public function index()
     {
-        return view('show') -> with('currencies', Currency::all());
+        $accounts = Account::query()
+        ->join('currencies', 'accounts.currency_id', '=', 'currencies.id')
+        ->where('user_id','=',Auth::user()->id)
+        ->get();
+        return view('show',['accounts'=>$accounts]);
     }
 
     /**

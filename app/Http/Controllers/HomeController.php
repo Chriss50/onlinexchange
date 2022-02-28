@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 
 class HomeController extends Controller
 {
@@ -25,7 +27,12 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home')-> with('transactions', Transaction::all())
+        $transactions = Transaction::query()
+        ->where('sender_id','=',Auth::user()->id)
+        ->orWhere('receiver_id','=',Auth::user()->id)
+        ->get();
+
+        return view('home')->with('transactions', $transactions)
         -> with('users', User::all());
     }
 }

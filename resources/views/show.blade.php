@@ -4,10 +4,15 @@
     <div class="card-body">
         <h3>Account Balance</h3><hr>
         <table class="table form-control">
+            <thead>
+                <th>Account</th>
+                <th>Balance</th>
+            </thead>
             <tbody>
-                @foreach($currencies as $currency)
+                @foreach($accounts as $account)
                 <tr>
-                    <td>{{$currency -> name}}</td>
+                    <td>{{$account->name}}</td>
+                    <td>{{$account->balance}}</td>
                 </tr>
                 @endforeach
             </tbody>
