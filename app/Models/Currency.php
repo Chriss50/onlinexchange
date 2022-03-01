@@ -9,6 +9,8 @@ class Currency extends Model
 {
     use HasFactory;
 
+
+
     public function transaction() {
         return $this -> belongsTo('App\Models\Transaction');
     }

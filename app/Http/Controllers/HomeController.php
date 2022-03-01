@@ -32,7 +32,7 @@ class HomeController extends Controller
         ->orWhere('receiver_id','=',Auth::user()->id)
         ->get();
 
-        return view('home')->with('transactions', $transactions)
+        return view('index')->with('transactions', $transactions)
         -> with('users', User::all());
     }
 }
