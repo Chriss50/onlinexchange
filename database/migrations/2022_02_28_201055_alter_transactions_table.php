@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('transactions', function (Blueprint $table) {
-
+            $table->integer('sender_id')->nullable()->change();
         });
     }
 
@@ -26,7 +26,6 @@ return new class extends Migration
     public function down()
     {
         Schema::table('transactions', function (Blueprint $table) {
-            $table->integer('sender_id')->nullable()->change();
         });
     }
 };
