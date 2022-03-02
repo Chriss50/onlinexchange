@@ -41,6 +41,7 @@
                     @endauth
                 </div>
                 <div class="col-lg-10">
+                    @include('includes.message')
                     @yield('content')
                 </div>
             </div>

@@ -55,8 +55,7 @@ class TransactionController extends Controller
             // dd($account_info);
         if((int) $account_info->balance < $request->amount)
         {
-            $this->addError("Balance not enough");
-            return;
+            return redirect() -> route('transactions') -> with('error', 'Balance not enough');
         }
 
 
