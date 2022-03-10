@@ -35,7 +35,12 @@
                                 <td>{{$transaction -> id}}</td>
                                 <td>{{ Auth::user()->id ===$transaction->sender_id ? "You" : ($transaction->sender_id ? \App\Models\User::where(['id' => $transaction->sender_id])->first()->name : "");}}</td>
                                 <td>{{Auth::user()->id ===$transaction->receiver_id ? "You" : \App\Models\User::where(['id' => $transaction->receiver_id])->first()->name;}}</td>
-                                <td>{{$transaction -> value}}</td>
+                                <td
+                                @if (Auth::user()->id ===$transaction->receiver_id)
+                                    class="text-success"
+                                @else
+                                    class="text-danger"
+                                @endif><span>{{Auth::user()->id === $transaction->sender_id ? "-" : "+";}}</span>{{$transaction -> value}}</td>
                                 <td>{{\App\Models\Currency::where(['id' => $transaction->currency_id])->first()->name;}}</td>
                                 <td>{{$transaction -> created_at}}</td>
                                 <td>{{$transaction -> updated_at}}</td>
